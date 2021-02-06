@@ -1,0 +1,17 @@
+buildscript {
+    repositories {
+        jcenter()
+        mavenCentral()
+    }
+}
+
+group 'io.tolgee'
+apply plugin: 'idea'
+
+idea {
+    module {
+        sourceDirs += file('src')
+        testSourceDirs += file('tests')
+        //excludeDirs += file("vendor")
+    }
+}

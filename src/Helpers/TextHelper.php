@@ -9,7 +9,7 @@ class TextHelper
      * @param $delimiter
      * @return array
      */
-    public static function splitOnNonEscapedDelimiter($string, $delimiter)
+    public static function splitOnNonEscapedDelimiter($string, $delimiter): array
     {
         $result = [];
         $actual = "";
@@ -32,7 +32,7 @@ class TextHelper
      * @param array $charArray
      * @return bool
      */
-    public static function isCharEscaped($position, array $charArray)
+    public static function isCharEscaped($position, array $charArray): bool
     {
         $escapeCharsCount = 0;
         while ($position > -1 && $charArray[$position - 1] === "\\") {
@@ -46,7 +46,7 @@ class TextHelper
      * @param $string string
      * @return string
      */
-    public static function removeEscapes($string)
+    public static function removeEscapes($string): string
     {
         return preg_replace_callback('/\\\\?\\\\?/', function ($match) {
             if ($match[0] === "\\\\") {

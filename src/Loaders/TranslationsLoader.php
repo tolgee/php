@@ -10,5 +10,5 @@ interface TranslationsLoader
      * @param $lang string
      * @return mixed[]
      */
-    function getTranslations($lang);
+    function getTranslations(string $lang): array;
 }

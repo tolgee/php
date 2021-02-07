@@ -4,7 +4,7 @@
 namespace Tolgee\Core\Enums;
 
 
-abstract class TranslationsSources
+abstract class TranslationSources
 {
     const API = "api";
     const LOCAL_FILE = "localFile";

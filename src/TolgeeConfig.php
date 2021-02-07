@@ -5,7 +5,7 @@ namespace Tolgee\Core;
 
 
 use Tolgee\Core\Enums\Modes;
-use Tolgee\Core\Enums\TranslationsSources;
+use Tolgee\Core\Enums\TranslationSources;
 
 class TolgeeConfig
 {
@@ -16,5 +16,6 @@ class TolgeeConfig
     public $apiKey = "";
     public $defaultLanguage = 'en';
     public $fallbackLanguage = "en";
-    public $developmentTranslationsSource = TranslationsSources::API;
+    public $developmentTranslationsSource = TranslationSources::API;
+    public $localFilesAbsolutePath = __DIR__ . "../../../../i18n";
 }

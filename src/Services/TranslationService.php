@@ -1,13 +1,15 @@
 <?php
 
 
-namespace Tolgee\Core;
+namespace Tolgee\Core\Services;
 
+use GuzzleHttp\Exception\GuzzleException;
 use Tolgee\Core\Helpers\TextHelper;
 use Tolgee\Core\Loaders\TranslationsLoaderFactory;
+use Tolgee\Core\TolgeeConfig;
 
 
-class TolgeeService
+class TranslationService
 {
     /**
      * @var TolgeeConfig Tolgee configuration
@@ -29,7 +31,7 @@ class TolgeeService
         $this->translationsLoaderFactory = $translationsLoaderFactory;
     }
 
-    function getTranslation($key, $lang)
+    public function getTranslation($key, $lang): string
     {
         $translatedText = $this->getFromCache($key, $lang) ?: $this->getFromCache($key, $this->config->fallbackLanguage);
 
@@ -43,11 +45,12 @@ class TolgeeService
 
     /**
      * @param $lang string
-     * @return mixed[]
+     * @return string[]|array[]
+     * @throws GuzzleException
      */
-    private function getTranslations($lang)
+    private function getTranslations(string $lang): array
     {
-        if ($this->translationsCache[$lang] === null) {
+        if (!array_key_exists($lang, $this->translationsCache)) {
             $this->translationsCache[$lang] = $this->translationsLoaderFactory->getLoader()->getTranslations($lang);
         }
         return $this->translationsCache[$lang];
@@ -57,8 +60,9 @@ class TolgeeService
      * @param $key string
      * @param $lang string
      * @return string|null
+     * @throws GuzzleException
      */
-    private function getFromCache($key, $lang)
+    private function getFromCache(string $key, string $lang)
     {
         $path = TextHelper::splitOnNonEscapedDelimiter($key, ".");
         $root = $this->getTranslations($lang);

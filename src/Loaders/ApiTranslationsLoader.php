@@ -5,6 +5,9 @@ namespace Tolgee\Core\Loaders;
 
 
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\GuzzleException;
+use Tolgee\Core\Exceptions\TolgeeServerErrorResponseException;
+use Tolgee\Core\Exceptions\TolgeeUnauthorizedException;
 use Tolgee\Core\TolgeeConfig;
 
 class ApiTranslationsLoader implements TranslationsLoader
@@ -14,27 +17,42 @@ class ApiTranslationsLoader implements TranslationsLoader
      */
     private $config;
 
-    public function __construct(TolgeeConfig $config)
+    /**
+     * @var Client|null
+     */
+    private $client;
+
+
+    public function __construct(TolgeeConfig $config, Client $client = null)
     {
         $this->config = $config;
-    }
-
-    function getTranslations($lang)
-    {
-        $apiKey = $this->config->apiKey;
-        $response = $this->getClient()->get("/uaa/en?ak=$apiKey");
-        $responseBodyContents = $response->getBody()->getContents();
-        return json_decode($responseBodyContents, true);
+        $this->client = $client ?: new Client();
     }
 
     /**
-     * @return Client
+     * @param string $lang
+     * @return array
+     * @throws GuzzleException
      */
-    private function getClient()
+    function getTranslations(string $lang): array
     {
-        return new Client([
-            'base_uri' => $this->config->apiUrl,
-            'timeout' => 2.0,
-        ]);
+        $apiKey = $this->config->apiKey;
+        $url = $this->config->apiUrl . "/uaa/$lang?ak=$apiKey";
+        $response = $this->client->request("GET", $url);
+
+        if ($response->getStatusCode() === 403) {
+            throw new TolgeeUnauthorizedException();
+        }
+
+        if ($response->getStatusCode() >= 400) {
+            throw new TolgeeServerErrorResponseException($response);
+        }
+
+        $translations = json_decode($response->getBody()->getContents(), true);
+        if ($translations[$lang] === null) {
+            return [];
+        }
+
+        return $translations[$lang];
     }
 }

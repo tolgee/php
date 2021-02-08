@@ -16,22 +16,22 @@ idea {
     }
 }
 
-static def dockerBase(mountDir) {
-    ["docker", "run", "-v", "$mountDir:/data", "-w", "/data", "tolgee/php:7.3-cli"]
+static def dockerBase(mountDir, workdir) {
+    ["docker", "run", "-v", "$mountDir:/data", "-w", "/data/$workdir", "tolgee/php:7.3-cli"]
 }
 
 task coreComposerInstall(type: Exec) {
     outputs.dir("${project.projectDir}/core/vendor")
     inputs.file("${project.projectDir}/core/composer.json")
     inputs.file("${project.projectDir}/core/composer.lock")
-    commandLine dockerBase(project.projectDir.absoluteFile.toString() + "/core") + ["composer", "install"]
+    commandLine dockerBase(project.projectDir.absoluteFile.toString() + "/core", "") + ["composer", "install"]
 }
 
 task testAppComposerInstall(type: Exec) {
     outputs.dir("${project.projectDir}/test_app/vendor")
     inputs.file("${project.projectDir}/test_app/composer.json")
     inputs.file("${project.projectDir}/test_app/composer.lock")
-    commandLine dockerBase(project.projectDir.absoluteFile.toString() + "/test_app") + ["composer", "install"]
+    commandLine dockerBase(project.projectDir.absoluteFile.toString(), "/test_app") + ["composer", "install"]
 }
 
 task testAppNpmInstall(type: Exec) {
@@ -43,7 +43,7 @@ task testAppNpmInstall(type: Exec) {
 
 task unitTest(type: Exec) {
     dependsOn coreComposerInstall
-    commandLine dockerBase(project.projectDir.absoluteFile.toString() + "/core") + ["./vendor/bin/phpunit"]
+    commandLine dockerBase(project.projectDir.absoluteFile.toString() + "/core", "") + ["./vendor/bin/phpunit"]
 }
 
 task buildDockerPhp(type: Exec, group: "docker") {

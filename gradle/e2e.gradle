@@ -34,7 +34,7 @@ task installE2eDeps(type: Exec, group: "e2e") {
 }
 
 task runE2e(type: Exec, group: "e2e") {
-    dependsOn "testAppNpmInstall", "runDockerE2e", "installE2eDeps"
+    dependsOn "coreComposerInstall", "testAppComposerInstall", "testAppNpmInstall", "runDockerE2e", "installE2eDeps"
 
     commandLine "npm", "run", "cy:run"
 

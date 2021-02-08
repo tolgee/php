@@ -39,6 +39,7 @@ task testAppNpmInstall(type: Exec) {
     inputs.file("${project.projectDir}/test_app/package-lock.json")
     workingDir = "${project.projectDir}/test_app"
     commandLine "npm", "install"
+    mustRunAfter coreComposerInstall
 }
 
 task unitTest(type: Exec) {

@@ -7,11 +7,49 @@ buildscript {
 
 group 'io.tolgee'
 apply plugin: 'idea'
+apply from: "./gradle/e2e.gradle"
 
 idea {
     module {
-        sourceDirs += file('src')
-        testSourceDirs += file('tests')
-        //excludeDirs += file("vendor")
+        sourceDirs += file('core/src')
+        testSourceDirs += file('core/tests')
     }
+}
+
+static def dockerBase(mountDir) {
+    ["docker", "run", "-v", "$mountDir:/data", "-w", "/data", "tolgee/php:7.3-cli"]
+}
+
+task coreComposerInstall(type: Exec) {
+    outputs.dir("${project.projectDir}/core/vendor")
+    inputs.file("${project.projectDir}/core/composer.json")
+    inputs.file("${project.projectDir}/core/composer.lock")
+    commandLine dockerBase(project.projectDir.absoluteFile.toString() + "/core") + ["composer", "install"]
+}
+
+task testAppComposerInstall(type: Exec) {
+    outputs.dir("${project.projectDir}/test_app/vendor")
+    inputs.file("${project.projectDir}/test_app/composer.json")
+    inputs.file("${project.projectDir}/test_app/composer.lock")
+    commandLine dockerBase(project.projectDir.absoluteFile.toString() + "/test_app") + ["composer", "install"]
+}
+
+task testAppNpmInstall(type: Exec) {
+    outputs.dir("${project.projectDir}/test_app/node_modules")
+    inputs.file("${project.projectDir}/test_app/package-lock.json")
+    workingDir = "${project.projectDir}/test_app"
+    commandLine "npm", "install"
+}
+
+task unitTest(type: Exec) {
+    dependsOn coreComposerInstall
+    commandLine dockerBase(project.projectDir.absoluteFile.toString() + "/core") + ["./vendor/bin/phpunit"]
+}
+
+task buildDockerPhp(type: Exec, group: "docker") {
+    commandLine "docker", "build", "-t", "tolgee/php:7.3-cli", "docker"
+}
+
+task build(type: Task) {
+    dependsOn "coreComposerInstall", "testAppComposerInstall", "unitTest", "runE2e"
 }

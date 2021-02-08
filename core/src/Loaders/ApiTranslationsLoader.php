@@ -5,6 +5,7 @@ namespace Tolgee\Core\Loaders;
 
 
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\GuzzleException;
 use Tolgee\Core\Exceptions\TolgeeServerErrorResponseException;
 use Tolgee\Core\Exceptions\TolgeeUnauthorizedException;
@@ -38,14 +39,22 @@ class ApiTranslationsLoader implements TranslationsLoader
     {
         $apiKey = $this->config->apiKey;
         $url = $this->config->apiUrl . "/uaa/$lang?ak=$apiKey";
-        $response = $this->client->request("GET", $url);
 
-        if ($response->getStatusCode() === 403) {
-            throw new TolgeeUnauthorizedException();
-        }
+        try {
+            $response = $this->client->request("GET", $url,
+                ['headers' => [
+                    'Accept' => 'application/json',
+                ]]
+            );
 
-        if ($response->getStatusCode() >= 400) {
-            throw new TolgeeServerErrorResponseException($response);
+        } catch (ClientException $e) {
+            if ($e->getResponse()->getStatusCode() === 403) {
+                throw new TolgeeUnauthorizedException();
+            }
+
+            if ($e->getResponse()->getStatusCode() >= 400) {
+                throw new TolgeeServerErrorResponseException($e->getResponse());
+            }
         }
 
         $translations = json_decode($response->getBody()->getContents(), true);

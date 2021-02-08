@@ -3,8 +3,8 @@
 use PHPUnit\Framework\TestCase;
 use Tolgee\Core\Loaders\TranslationsLoader;
 use Tolgee\Core\Loaders\TranslationsLoaderFactory;
-use Tolgee\Core\TolgeeConfig;
 use Tolgee\Core\Services\TranslationService;
+use Tolgee\Core\TolgeeConfig;
 
 class TranslationServiceTest extends TestCase
 {

@@ -4,8 +4,8 @@
 namespace Tolgee\Core\Loaders;
 
 
-use PHPUnit\Exception;
 use Tolgee\Core\Exceptions\FileReadException;
+use Tolgee\Core\Exceptions\LanguageContainsIllegalCharacterException;
 use Tolgee\Core\Exceptions\TranslationFileReadException;
 use Tolgee\Core\Helpers\FileReader;
 use Tolgee\Core\TolgeeConfig;
@@ -27,6 +27,7 @@ class LocalFileTranslationsLoader implements TranslationsLoader
         $this->nativeWrapper = $fileReader ?: new FileReader();
     }
 
+
     /**
      * @param string $lang
      * @return array
@@ -34,6 +35,11 @@ class LocalFileTranslationsLoader implements TranslationsLoader
      */
     function getTranslations(string $lang): array
     {
+        $langContainsIllegalCharacter = preg_match("|.*[./\\\\]+.*|", $lang);
+        if($langContainsIllegalCharacter){
+            throw new LanguageContainsIllegalCharacterException($lang);
+        }
+
         $dir = $this->config->localFilesAbsolutePath;
         try {
             $fileName = $dir . "/" . $lang . ".json";

@@ -1,3 +1,6 @@
-vendor
+core/vendor
+test_app/vendor
 .phpunit.result.cache
 *.iml
+e2e/node_modules
+e2e/cypress/videos

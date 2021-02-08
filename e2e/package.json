@@ -1,0 +1,19 @@
+{
+  "name": "php-e2e",
+  "version": "1.0.0",
+  "description": "E2e testing of Tolgee php integration",
+  "main": "index.js",
+  "scripts": {
+    "cy:run": "cypress run",
+    "cy:open": "cypress open"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cypress-xpath": "^1.6.1",
+    "cypress": "^6.4.0"
+  },
+  "devDependencies": {
+    "typescript": "^4.1.3"
+  }
+}

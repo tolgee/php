@@ -2,16 +2,10 @@
 
 namespace Tolgee\Core\Loaders;
 
-use Cassandra\Exception\UnauthorizedException;
-use GuzzleHttp\Client;
-use GuzzleHttp\Exception\GuzzleException;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\StreamInterface;
 use Tolgee\Core\Exceptions\FileReadException;
-use Tolgee\Core\Exceptions\TolgeeServerErrorResponseException;
-use Tolgee\Core\Exceptions\TolgeeUnauthorizedException;
+use Tolgee\Core\Exceptions\LanguageContainsIllegalCharacterException;
 use Tolgee\Core\Exceptions\TranslationFileReadException;
 use Tolgee\Core\Helpers\FileReader;
 use Tolgee\Core\TolgeeConfig;
@@ -57,6 +51,52 @@ class LocalFileTranslationsLoaderTest extends TestCase
         } catch (TranslationFileReadException $e) {
             $expected = "fopen(/path/aa.json): failed to open stream: No such file or directory\n" .
                 "Please check your localFilesAbsolutePath property of Tolgee config.";
+            self::assertEquals($expected, $e->getMessage());
+            throw $e;
+        }
+    }
+
+
+    /**
+     * @throws TranslationFileReadException
+     */
+    function testGetTranslationsLangIllegalCharacterDot()
+    {
+        $this->expectException(LanguageContainsIllegalCharacterException::class);
+        try {
+            $this->loader->getTranslations("la.la");
+        } catch (LanguageContainsIllegalCharacterException $e) {
+            $expected = "Lang: 'la.la' contains illegal character '.', '\' or '/'";
+            self::assertEquals($expected, $e->getMessage());
+            throw $e;
+        }
+    }
+
+    /**
+     * @throws TranslationFileReadException
+     */
+    function testGetTranslationsLangIllegalCharacterSlash()
+    {
+        $this->expectException(LanguageContainsIllegalCharacterException::class);
+        try {
+            $this->loader->getTranslations("la/la");
+        } catch (LanguageContainsIllegalCharacterException $e) {
+            $expected = "Lang: 'la/la' contains illegal character '.', '\' or '/'";
+            self::assertEquals($expected, $e->getMessage());
+            throw $e;
+        }
+    }
+
+    /**
+     * @throws TranslationFileReadException
+     */
+    function testGetTranslationsLangIllegalCharacterBackslash()
+    {
+        $this->expectException(LanguageContainsIllegalCharacterException::class);
+        try {
+            $this->loader->getTranslations("la\\la");
+        } catch (LanguageContainsIllegalCharacterException $e) {
+            $expected = "Lang: 'la\\la' contains illegal character '.', '\' or '/'";
             self::assertEquals($expected, $e->getMessage());
             throw $e;
         }

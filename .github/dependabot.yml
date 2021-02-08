@@ -1,0 +1,14 @@
+version: 2
+updates:
+- package-ecosystem: npm
+  directory: "/test_app"
+  schedule:
+    interval: weekly
+  open-pull-requests-limit: 20
+  target-branch: develop
+- package-ecosystem: npm
+  directory: "/e2e"
+  schedule:
+    interval: weekly
+  open-pull-requests-limit: 20
+  target-branch: develop

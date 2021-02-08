@@ -1,0 +1,32 @@
+version: '3'
+services:
+  e2e_app_php_app:
+    container_name: tolgee_php_e2e_server
+    image: tolgee/tolgee:latest
+    hostname: tolgee
+    ports:
+      - 8202:8080
+      - 8092:8091
+    environment:
+      - tolgee.internal.populate=true
+      - tolgee.internal.controllerEnabled=true
+      - "tolgee.screenshots-url=http://localhost:8202/screenshots"
+      - tolgee.authentication.needs-email-verification=true
+      - tolgee.authentication.registrations-allowed=true
+      - tolgee.internal.fake-emails-sent=true
+      - tolgee.authentication.initialPassword=admin
+      - JAVA_TOOL_OPTIONS=-agentlib:jdwp=transport=dt_socket,address=*:8091,server=y,suspend=n
+  e2e_app_php_core:
+    image: tolgee/php:7.3-cli
+    container_name: tolgee_js_e2e_serve_testapps_php_core
+    volumes:
+      - "../:/data"
+    ports:
+      - 8101:8101
+    environment:
+      XDEBUG_CONFIG: "
+        client_host=host.docker.internal
+        start_with_request=yes
+      "
+    command: [ "php", "-S", "0.0.0.0:8101" ]
+    working_dir: /data/test_app

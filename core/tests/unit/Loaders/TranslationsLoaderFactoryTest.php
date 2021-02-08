@@ -6,7 +6,6 @@ use PHPUnit\Framework\TestCase;
 use Tolgee\Core\Enums\Modes;
 use Tolgee\Core\Enums\TranslationSources;
 use Tolgee\Core\Exceptions\UnknownTranslationSourceException;
-use Tolgee\Core\Services\TranslationService;
 use Tolgee\Core\TolgeeConfig;
 
 class TranslationsLoaderFactoryTest extends TestCase

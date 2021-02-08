@@ -5,7 +5,6 @@ namespace Tolgee\Core\Exceptions;
 
 
 use PHPUnit\Framework\Exception;
-use Throwable;
 
 class FileReadException extends Exception
 {

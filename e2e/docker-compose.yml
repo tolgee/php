@@ -27,6 +27,9 @@ services:
       XDEBUG_CONFIG: "
         client_host=host.docker.internal
         start_with_request=yes
+        remote_enable=on
+        remote_host=host.docker.internal
       "
+      XDEBUG_MODE: "debug"
     command: [ "php", "-S", "0.0.0.0:8101" ]
     working_dir: /data/test_app

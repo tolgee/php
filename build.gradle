@@ -20,18 +20,11 @@ static def dockerBase(mountDir, workdir) {
     ["docker", "run", "-v", "$mountDir:/data", "-w", "/data/$workdir", "tolgee/php:7.3-cli"]
 }
 
-task coreComposerInstall(type: Exec) {
-    outputs.dir("${project.projectDir}/core/vendor")
-    inputs.file("${project.projectDir}/core/composer.json")
-    inputs.file("${project.projectDir}/core/composer.lock")
-    commandLine dockerBase(project.projectDir.absoluteFile.toString() + "/core", "") + ["composer", "install"]
-}
-
-task testAppComposerInstall(type: Exec) {
-    outputs.dir("${project.projectDir}/test_app/vendor")
-    inputs.file("${project.projectDir}/test_app/composer.json")
-    inputs.file("${project.projectDir}/test_app/composer.lock")
-    commandLine dockerBase(project.projectDir.absoluteFile.toString(), "/test_app") + ["composer", "install"]
+task composerInstall(type: Exec) {
+    outputs.dir("${project.projectDir}/vendor")
+    inputs.file("${project.projectDir}/composer.json")
+    inputs.file("${project.projectDir}/composer.lock")
+    commandLine dockerBase(project.projectDir.absoluteFile.toString() + "", "") + ["composer", "install"]
 }
 
 task testAppNpmInstall(type: Exec) {
@@ -39,12 +32,12 @@ task testAppNpmInstall(type: Exec) {
     inputs.file("${project.projectDir}/test_app/package-lock.json")
     workingDir = "${project.projectDir}/test_app"
     commandLine "npm", "install"
-    mustRunAfter coreComposerInstall
+    mustRunAfter composerInstall
 }
 
 task unitTest(type: Exec) {
-    dependsOn coreComposerInstall
-    commandLine dockerBase(project.projectDir.absoluteFile.toString() + "/core", "") + ["./vendor/bin/phpunit"]
+    dependsOn composerInstall
+    commandLine dockerBase(project.projectDir.absoluteFile.toString() + "", "") + ["./vendor/bin/phpunit"]
 }
 
 task buildDockerPhp(type: Exec, group: "docker") {
@@ -52,5 +45,5 @@ task buildDockerPhp(type: Exec, group: "docker") {
 }
 
 task build(type: Task) {
-    dependsOn "coreComposerInstall", "testAppComposerInstall", "unitTest", "runE2e"
+    dependsOn "composerInstall", "unitTest", "runE2e"
 }

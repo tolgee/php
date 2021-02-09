@@ -4,7 +4,7 @@ use Tolgee\Core\Enums\Modes;
 use Tolgee\Core\Tolgee;
 use Tolgee\Core\TolgeeConfig;
 
-require __DIR__ . "/vendor/autoload.php";
+require __DIR__ . "/../vendor/autoload.php";
 
 $config = new TolgeeConfig();
 $config->apiUrl = "http://tolgee:8080";

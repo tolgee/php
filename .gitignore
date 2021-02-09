@@ -5,3 +5,4 @@ test_app/vendor
 e2e/node_modules
 e2e/cypress/videos
 test_app/node_modules
+vendor

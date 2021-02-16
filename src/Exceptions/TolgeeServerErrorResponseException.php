@@ -4,7 +4,7 @@
 namespace Tolgee\Core\Exceptions;
 
 
-use PHPUnit\Framework\Exception;
+use Exception;
 use Psr\Http\Message\ResponseInterface;
 
 class TolgeeServerErrorResponseException extends Exception

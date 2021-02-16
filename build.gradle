@@ -11,8 +11,9 @@ apply from: "./gradle/e2e.gradle"
 
 idea {
     module {
-        sourceDirs += file('core/src')
-        testSourceDirs += file('core/tests')
+        sourceDirs += file('src')
+        testSourceDirs += file('tests')
+        excludeDirs += file('vendor')
     }
 }
 

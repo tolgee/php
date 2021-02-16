@@ -4,7 +4,7 @@
 namespace Tolgee\Core\Exceptions;
 
 
-use PHPUnit\Framework\Exception;
+use Exception;
 
 class LanguageContainsIllegalCharacterException extends Exception
 {

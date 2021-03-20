@@ -26,7 +26,7 @@ class TextServiceTest extends TestCase
     public function testTranslationWithSimpleParams()
     {
         $this->translationService->method("getTranslation")
-            ->willReturn("Hello, {{name}} has {{animalCount}} {{animalsKind}}.");
+            ->willReturn("Hello, {name} has {animalCount} {animalsKind}.");
         $params = ["name" => "Peter", "animalCount" => 10, "animalsKind" => "gorillas"];
         $result = $this->service->translate("hello", $params, "en");
         $this->assertEquals("Hello, Peter has 10 gorillas.", $result);
@@ -34,8 +34,8 @@ class TextServiceTest extends TestCase
 
     public function testTranslationWithParamsWithRegexChars()
     {
-        $this->translationService->method("getTranslation")->willReturn("Hello, {{n\\.*?+ame}}.");
-        $result = $this->service->translate("hello", ["n\\.*?+ame" => "Peter"], "en");
+        $this->translationService->method("getTranslation")->willReturn("Hello, {name}.");
+        $result = $this->service->translate("hello", ["name" => "Peter"], "en");
         $this->assertEquals("Hello, Peter.", $result);
     }
 

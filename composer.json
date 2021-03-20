@@ -18,6 +18,7 @@
     "phpunit/phpunit": "^9.5"
   },
   "require": {
-    "guzzlehttp/guzzle": "^7.0"
+    "guzzlehttp/guzzle": "^7.0",
+    "ext-intl": "*"
   }
 }

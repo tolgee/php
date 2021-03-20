@@ -4,6 +4,7 @@
 namespace Tolgee\Core\Services;
 
 
+use MessageFormatter;
 use Tolgee\Core\TolgeeConfig;
 
 class TextService
@@ -26,19 +27,12 @@ class TextService
     public function translate(string $key, array $params, string $lang): string
     {
         $translation = $this->translationService->getTranslation($key, $lang);
-        return $this->replaceParams($translation, $params);
+        return $this->format($translation, $lang, $params);
     }
 
-    private function replaceParams(string $translation, array $params = []): string
+    private function format(string $translation, $lang, array $params = []): string
     {
-        $result = $translation;
-
-        foreach ($params as $name => $value) {
-            $regExp = "/\\{\\{\\s*" . preg_quote($name, "/") . "\\s*\\}\\}/";
-            $result = preg_replace($regExp, $value, $result);
-        }
-
-        return $result;
+        return MessageFormatter::formatMessage($lang, $translation, $params);
     }
 
     public function wrap(string $key, array $params = []): string
